@@ -5,6 +5,7 @@ from Simulator.Render import *
 from Simulator.Sound.sound import *
 from Simulator.ui_logger import UiLogger
 import random
+from PIL import Image, ImageTk
 
 
 class World:
@@ -16,14 +17,35 @@ class World:
         self.title = 'World Simulator'
         self.new_title(self.title)
 
-        self.logger = UiLogger(self.root, max_height=25, simplify=True)
-        self.logger.logger().pack(fill=BOTH, expand=0)
+        # 一些基本类
+        self.spectrum_map = SpectrumMap()
 
-        self.lrc = Lyric()
+        # 在这里构建窗口
 
-        Sound.load()
-        Sound.play()
-        self.lrc.start()
+        frame_left = Frame(self.root)
+        frame_right = Frame(self.root)
+
+        # 音频频谱表现
+        im = self.spectrum_map.map(1024*10)
+        imp = ImageTk.PhotoImage(image=im)
+        self.voice = Label(frame_right, image=imp)
+        self.voice.image = imp
+        self.voice.grid(row=1, column=0, sticky=W+E)
+
+        # Me说的话
+        self.words = UiLogger(frame_right, title='I said', max_height=15)
+        self.words.logger().grid(row=2, column=0, sticky=W + E)
+
+        # My Status
+        self.words = UiLogger(frame_right, title='Status', max_height=15)
+        self.words.logger().grid(row=2, column=0, sticky=W + E)
+
+        # 程序运行日志
+        self.log = UiLogger(frame_right, title='Logs', max_height=10)
+        self.log.logger().grid(row=3, column=0, sticky=W+E)
+
+        frame_left.pack(side=LEFT)
+        frame_right.pack(side=RIGHT)
 
         self.thread()
 
@@ -31,11 +53,19 @@ class World:
         self.title = title
         self.root.title(self.title)
 
+    # def thread(self):
+    #     # self.logger.push(UiLogger.Item(random.randint(0, 4), 'create', 'World No.%s' % random.randint(0, 9999)))
+    #     if self.lrc.has_new():
+    #         self.logger.push(UiLogger.Item(UiLogger.LEVEL_INFO, 'Lyric', self.lrc.next()))
+    #     self.root.after(10, self.thread)
+
     def thread(self):
-        # self.logger.push(UiLogger.Item(random.randint(0, 4), 'create', 'World No.%s' % random.randint(0, 9999)))
-        if self.lrc.has_new():
-            self.logger.push(UiLogger.Item(UiLogger.LEVEL_INFO, 'Lyric', self.lrc.next()))
-        self.root.after(10, self.thread)
+        im = self.spectrum_map.raw(1024 * 10)
+        imp = ImageTk.PhotoImage(image=im)
+        self.voice.configure(image=imp)
+        self.voice.image = imp
+
+        self.root.after(100, self.thread)
 
     def mainloop(self):
         self.root.mainloop()
