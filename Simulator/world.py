@@ -19,6 +19,7 @@ class World:
 
         # 一些基本类
         self.spectrum_map = SpectrumMap()
+        self.spectrum_map_wave = SpectrumMap()
 
         # 在这里构建窗口
 
@@ -26,28 +27,47 @@ class World:
         frame_right = Frame(self.root)
 
         # 音频频谱表现
-        im = self.spectrum_map.map(1024*10)
-        imp = ImageTk.PhotoImage(image=im)
-        self.voice = Label(frame_right, image=imp)
-        self.voice.image = imp
+        # im = self.spectrum_map.map(1024*10)
+        # imp = ImageTk.PhotoImage(image=im)
+        # self.voice = Label(frame_right, image=imp)
+        self.voice = Label(frame_right)
+        # self.voice.image = imp
         self.voice.grid(row=1, column=0, sticky=W+E)
 
         # Me说的话
-        self.words = UiLogger(frame_right, title='I said', max_height=15)
+        self.words = UiLogger(frame_right, title='I said', max_height=5)
         self.words.logger().grid(row=2, column=0, sticky=W + E)
 
         # My Status
-        self.words = UiLogger(frame_right, title='Status', max_height=15)
-        self.words.logger().grid(row=2, column=0, sticky=W + E)
+        self.words = UiLogger(frame_right, title='Status', max_height=10)
+        self.words.logger().grid(row=3, column=0, sticky=W + E)
 
         # 程序运行日志
-        self.log = UiLogger(frame_right, title='Logs', max_height=10)
-        self.log.logger().grid(row=3, column=0, sticky=W+E)
+        self.log = UiLogger(frame_right, title='Logs', max_height=5)
+        self.log.logger().grid(row=4, column=0, sticky=W+E)
+
+        # 占位窗口
+        self.span = UiLogger(frame_left, title='Simulation', max_height=22)
+        self.span.logger().grid(row=1, column=1, sticky=W+E, columnspan=2)
+
+        # 处理中
+        self.processing = UiLogger(frame_left, title='Processing', max_height=5)
+        self.processing.logger().grid(row=2, column=1, sticky=W+E)
+
+        # 数据
+        self.data = UiLogger(frame_left, title='Data', max_height=5)
+        self.data.logger().grid(row=2, column=2, sticky=W+E)
 
         frame_left.pack(side=LEFT)
         frame_right.pack(side=RIGHT)
 
-        self.thread()
+        # im = self.spectrum_map.map(1024, clear=True)
+        # im.save('spectrum_map.png')
+
+        # self.thread()
+        t = threading.Thread(target=self.thread)
+        t.setDaemon(True)
+        t.start()
 
     def new_title(self, title: str):
         self.title = title
@@ -60,12 +80,18 @@ class World:
     #     self.root.after(10, self.thread)
 
     def thread(self):
-        im = self.spectrum_map.raw(1024 * 10)
+        def im_clear(x):
+            if x == 255:
+                return 0
+            return x
+        im = SpectrumMap.blend(self.spectrum_map, self.spectrum_map_wave, 1024)
+        im = im.resize((256, 136))
         imp = ImageTk.PhotoImage(image=im)
         self.voice.configure(image=imp)
         self.voice.image = imp
 
-        self.root.after(100, self.thread)
+        # self.root.after(1, self.thread)
+        self.thread()
 
     def mainloop(self):
         self.root.mainloop()
