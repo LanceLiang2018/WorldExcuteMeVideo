@@ -44,15 +44,23 @@ class UiLogger:
     def __init__(self, root,
                  label_frame: bool=True, title: str='Logger',
                  max_height: int=8,
-                 simplify: bool=False):
+                 simplify: bool=False,
+                 # 没有用处。。。
+                 width: int=None, height: int=None):
         self.root = root
         self.title = title
         self.max_height = max_height
         self.simplify = simplify
-        if label_frame:
-            self.frame = LabelFrame(self.root, text=self.title)
+        if width is not None and height is not None:
+            if label_frame:
+                self.frame = LabelFrame(self.root, text=self.title, width=width, height=height)
+            else:
+                self.frame = Frame(self.root, width=width, height=height)
         else:
-            self.frame = Frame(self.root)
+            if label_frame:
+                self.frame = LabelFrame(self.root, text=self.title)
+            else:
+                self.frame = Frame(self.root)
 
         self.queue = []
         self.vars = [StringVar() for i in range(self.max_height)]
