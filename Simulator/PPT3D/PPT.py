@@ -259,7 +259,8 @@ class PPT:
             self.pages.append(Page().load(page))
         return self
 
-    def load_file(self, filename: str):
+    @staticmethod
+    def load_file(filename: str):
         if not os.path.exists(filename):
             raise FileNotFoundError
         if not zipfile.is_zipfile(filename):

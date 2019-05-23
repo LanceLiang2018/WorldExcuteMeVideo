@@ -35,7 +35,7 @@ def ppt2img(filepath: str):
     # time.sleep(2)
     powerpoint.Visible = True
     ppt = powerpoint.Presentations.Open(filepath)
-    #保存为图片
+    # 保存为图片
     # print(os.path.abspath("%s%s.jpg" % (TEMP_PATH, name)))
     # ppt.SaveAs("%s%s.jpg" % (TEMP_PATH, name), 17)
     # ppt.SaveAs("imgs.jpg", 17)
@@ -49,7 +49,7 @@ def ppt2img(filepath: str):
 
 class PPT3D:
 
-    def __init__(self, ppt: PPT, fullscreen=False, pos: list=None, window_size=None):
+    def __init__(self, ppt: PPT, fullscreen=False, pos: list=None, window_size=None, title: str='Simulation'):
 
         # 初始化内容
         self.ppt = ppt
@@ -68,16 +68,23 @@ class PPT3D:
         self.zoom_window = 0.5
         self.rect_screen = list(map(int, [GetSystemMetrics(0), GetSystemMetrics(1)]))
         self.rect_image = list(map(lambda x: x * 1, self.rect_screen))
-        self.rect_window = list(map(int, [self.rect_screen[0] * self.zoom_window,
-                                          self.rect_screen[1] * self.zoom_window]))
-        self.rect_page = list(map(lambda x: x / 3000, self.rect_screen))
-        self.size_room = [5, 5, 5]
+        if window_size is not None:
+            self.rect_window = list(map(int, window_size))
+        else:
+            self.rect_window = list(map(int, [self.rect_screen[0] * self.zoom_window,
+                                              self.rect_screen[1] * self.zoom_window]))
+        # self.rect_page = list(map(lambda x: x / 3000, self.rect_screen))
+        # self.size_room = [5, 5, 5]
         # print(self.rect_screen)
 
         glutInit(sys.argv)
         glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH | GLUT_MULTISAMPLE)
         glutInitWindowSize(self.rect_window[0], self.rect_window[1])
-        self.window = glutCreateWindow('Hello PyOpenGL')
+
+        if pos is not None:
+            glutPositionWindow(pos[0], pos[1])
+
+        self.window = glutCreateWindow(title)
         glutDisplayFunc(self.draw)
         glutMouseFunc(self.motion.mouse)
         glutKeyboardFunc(self.motion.keyboard)
@@ -287,7 +294,8 @@ class PPT3D:
         # if glutGameModeGet(GLUT_GAME_MODE_ACTIVE):
         #     glutLeaveGameMode()
 
-    def mainloop(self):
+    @staticmethod
+    def mainloop():
         glutMainLoop()
 
 
@@ -391,7 +399,7 @@ class Motion:
 
     def timer(self):
         if self.status == 1:
-            facing = self.ppt.pages[self.facing].position
+            # facing = self.ppt.pages[self.facing].position
             target = self.ppt.pages[self.target].position
             # self.x += min((target.x - self.x) / 10, -(target.x - facing.x) / 10)
             # self.y += min((target.y - self.y) / 10, -(target.y - facing.y) / 10)
@@ -408,7 +416,8 @@ class Motion:
                 self.status = 0
 
         if (self.angel[0] - self.angel_target[0])**2 + (self.angel[1] - self.angel_target[1])**2 \
-                <= (self.angel_source[0] - self.angel_target[0])**2 + (self.angel_source[1] - self.angel_target[1])**2 / 2:
+                <= (self.angel_source[0] - self.angel_target[0])**2 + \
+                (self.angel_source[1] - self.angel_target[1])**2 / 2:
             self.angel[0] += (self.angel_target[0] - self.angel[0]) / 30
             self.angel[1] += (self.angel_target[1] - self.angel[1]) / 30
         else:
@@ -433,7 +442,7 @@ class Motion:
 
     def new_angel(self):
         self.angel_source = copy.deepcopy(self.angel_target)
-        self.angel_target = [float(random.uniform(-3, 3)) for i in range(2)]
+        self.angel_target = [float(random.uniform(-3, 3)) for _ in range(2)]
         # print(self.angel_target, self.angel_source)
 
     def set_look_at(self):

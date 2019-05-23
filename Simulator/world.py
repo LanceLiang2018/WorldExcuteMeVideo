@@ -1,7 +1,7 @@
 from tkinter import *
 from Simulator.Lyric.lyric import *
 from Simulator.Me import *
-from Simulator.Render import *
+# from Simulator.Render import *
 from Simulator.Sound.sound import *
 from Simulator.ui_logger import UiLogger
 import random
@@ -20,6 +20,8 @@ class World:
         # 一些基本类
         self.spectrum_map = SpectrumMap()
         self.spectrum_map_wave = SpectrumMap()
+        self.lrc = Lyric()
+        self.sound = Sound()
 
         # 在这里构建窗口
 
@@ -74,6 +76,10 @@ class World:
         t.setDaemon(True)
         t.start()
 
+        self.sound.load()
+        self.sound.play()
+        self.lrc.start()
+
     def new_title(self, title: str):
         self.title = title
         self.root.title(self.title)
@@ -95,8 +101,14 @@ class World:
         self.voice.configure(image=imp)
         self.voice.image = imp
 
+        if self.lrc.has_new():
+            self.words.push(UiLogger.Item(UiLogger.LEVEL_INFO, 'Lyric', self.lrc.next()))
+
         # self.root.after(1, self.thread)
         self.thread()
+
+    def title_manager(self):
+        pass
 
     def mainloop(self):
         self.root.mainloop()
