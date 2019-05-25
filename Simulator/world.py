@@ -21,8 +21,9 @@ class World:
         self.new_title(self.title)
 
         # 一些基本类
-        self.spectrum_map = SpectrumMap()
-        self.spectrum_map_wave = SpectrumMap()
+        # self.spectrum_map = SpectrumMap()
+        # self.spectrum_map_wave = SpectrumMap()
+        self.spectrum = SpectrumMap2()
         self.lrc = Lyric()
         self.sound = Sound()
 
@@ -44,8 +45,8 @@ class World:
         self.words.logger().grid(row=2, column=0, sticky=W + E)
 
         # My Status
-        self.words = UiLogger(frame_right, title='Status', max_height=10)
-        self.words.logger().grid(row=3, column=0, sticky=W + E)
+        self.status = UiLogger(frame_right, title='Status', max_height=10)
+        self.status.logger().grid(row=3, column=0, sticky=W + E)
 
         # 程序运行日志
         self.log = UiLogger(frame_right, title='Logs', max_height=5)
@@ -54,7 +55,7 @@ class World:
         # 占位窗口
         # self.span = UiLogger(frame_left, title='Simulation', max_height=22, width=600, height=300)
         # self.span.logger().grid(row=1, column=1, sticky=W+E, columnspan=2)
-        self.span = LabelFrame(frame_left, text='Simulation', width=800, height=600)
+        self.span = LabelFrame(frame_left, text='Simulation', width=800+2, height=600+2)
         self.span.grid(row=1, column=1, sticky=W + E, columnspan=2)
 
         # 处理中
@@ -94,7 +95,7 @@ class World:
         t.start()
 
         self.sound.load()
-        self.sound.play()
+        # self.sound.play()
         self.lrc.start()
 
     def new_title(self, title: str):
@@ -112,8 +113,9 @@ class World:
             if x == 255:
                 return 0
             return x
-        im = SpectrumMap.blend(self.spectrum_map, self.spectrum_map_wave, 1024)
-        im = im.resize((256, 140))
+        # im = SpectrumMap.blend(self.spectrum_map, self.spectrum_map_wave, 1024)
+        im = self.spectrum.fetch(1)
+        # im = im.resize((256, 140))
         imp = ImageTk.PhotoImage(image=im)
         self.voice.configure(image=imp)
         self.voice.image = imp

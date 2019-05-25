@@ -58,7 +58,7 @@ class PPT3D:
         self.settings = Settings()
         # self.renderer = Renderer()
         self.templates = Templates()
-        self.motion = Motion(self)
+        # self.motion = Motion(self)
 
         # 显示相关
         # Frame数量
@@ -85,9 +85,9 @@ class PPT3D:
 
         self.window = glutCreateWindow(title)
         glutDisplayFunc(self.draw)
-        glutMouseFunc(self.motion.mouse)
-        glutKeyboardFunc(self.motion.keyboard)
-        glutSpecialFunc(self.motion.keyboard)
+        # glutMouseFunc(self.motion.mouse)
+        # glutKeyboardFunc(self.motion.keyboard)
+        # glutSpecialFunc(self.motion.keyboard)
         glutIdleFunc(self.draw)
 
         if fullscreen:
@@ -105,7 +105,7 @@ class PPT3D:
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         glLoadIdentity()
 
-        self.motion.timer()
+        # self.motion.timer()
 
         # glRotatef(self.t, 0, 1, 0)
         # self.t += 0.5
