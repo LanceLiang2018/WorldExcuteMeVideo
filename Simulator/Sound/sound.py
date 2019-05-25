@@ -60,7 +60,7 @@ class SpectrumMap:
                 pass
 
         data = io.BytesIO()
-        y = abs(np.fft.fft(y) * self.nchannels)
+        # y = abs(np.fft.fft(y) * self.nchannels)
         y = y[:len(y)//2]
         # pylab.specgram(y, NFFT=1024, Fs=self.framerate, noverlap=900)
         pylab.plot(range(count//2), y)

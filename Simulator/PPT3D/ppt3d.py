@@ -69,6 +69,8 @@ class PPT3D:
         self.rect_screen = list(map(int, [GetSystemMetrics(0), GetSystemMetrics(1)]))
         self.rect_image = list(map(lambda x: x * 1, self.rect_screen))
         if window_size is not None:
+            window_size = list(window_size)
+            # window_size[-1] -= 32
             self.rect_window = list(map(int, window_size))
         else:
             self.rect_window = list(map(int, [self.rect_screen[0] * self.zoom_window,
@@ -80,9 +82,6 @@ class PPT3D:
         glutInit(sys.argv)
         glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH | GLUT_MULTISAMPLE)
         glutInitWindowSize(self.rect_window[0], self.rect_window[1])
-
-        if pos is not None:
-            glutPositionWindow(pos[0], pos[1])
 
         self.window = glutCreateWindow(title)
         glutDisplayFunc(self.draw)
@@ -96,6 +95,9 @@ class PPT3D:
         self.fullscreen = fullscreen
 
         self.glut_init(self.rect_window[0], self.rect_window[1])
+
+        if pos is not None:
+            glutPositionWindow(pos[0], pos[1])
 
         # self.t = 0
 
@@ -296,7 +298,10 @@ class PPT3D:
 
     @staticmethod
     def mainloop():
-        glutMainLoop()
+        # glutMainLoop()
+        while True:
+            glutMainLoopEvent()
+            glutPostRedisplay()
 
 
 class Motion:

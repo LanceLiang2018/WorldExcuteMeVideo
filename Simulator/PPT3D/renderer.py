@@ -1,5 +1,7 @@
 from PIL import Image, ImageDraw, ImageFont
-from base_logger import getLogger
+from Simulator.PPT3D.PPT import *
+from Simulator.PPT3D.base_logger import get_logger
+# from base_logger import getLogger
 
 
 class Renderer:
@@ -88,7 +90,7 @@ class Renderer:
         return src
 
 
-logger = getLogger(__name__)
+logger = get_logger(__name__)
 
 
 if __name__ == '__main__':

@@ -4,8 +4,11 @@ from Simulator.Me import *
 # from Simulator.Render import *
 from Simulator.Sound.sound import *
 from Simulator.ui_logger import UiLogger
+# from Simulator.PPT3D.PPT import *
+from Simulator.PPT3D.ppt3d import Page, Frame as mFrame, PPT, PPT3D
 import random
 from PIL import Image, ImageTk
+import multiprocessing
 
 
 class World:
@@ -71,6 +74,20 @@ class World:
         # im = self.spectrum_map.map(1024, clear=True)
         # im.save('spectrum_map.png')
 
+        # 处理3D窗口
+        self.ppt = PPT()
+        page = Page()
+        page.frames.append(mFrame(image=Image.new("RGBA", (128, 128))))
+        page.position.load([random.random() * 6.8 for i in range(3)])
+        self.ppt.pages.append(page)
+        self.ppt3d = None
+        t = threading.Thread(target=self.gl_mainloop)
+        t.setDaemon(True)
+        t.start()
+        # p = multiprocessing.Process(target=self.gl_mainloop)
+        # p.daemon = True
+        # p.start()
+
         # self.thread()
         t = threading.Thread(target=self.thread)
         t.setDaemon(True)
@@ -112,6 +129,10 @@ class World:
 
     def mainloop(self):
         self.root.mainloop()
+
+    def gl_mainloop(self):
+        self.ppt3d = PPT3D(self.ppt, window_size=(800, 600), pos=[self.root.winfo_x(), self.root.winfo_y()])
+        self.ppt3d.mainloop()
 
 
 if __name__ == '__main__':
