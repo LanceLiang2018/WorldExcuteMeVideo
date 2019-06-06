@@ -137,7 +137,7 @@ class Lyric:
         self.file_cn = 'Lyric/world.execute(me);_translated.lrc'
         with open(self.file_en) as f:
             self.data = Lrc.parse_lrc(f.read())
-        with open(self.file_cn) as f:
+        with open(self.file_cn, encoding='gbk') as f:
             self.data_cn = Lrc.parse_lrc(f.read())
         # print(self.data)
         self.time_start = 0

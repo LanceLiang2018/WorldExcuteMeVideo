@@ -11,7 +11,7 @@ class UiLogger:
     LEVEL_ERROR = 4
     LEVELS = ['VERBOSE', 'DEBUG', 'INFO', 'WARNING', 'ERROR']
     COLORS = ['BLACK', 'GREY', 'GREEN', 'ORANGE', 'RED']
-    FONT = 'Yahei Mono'
+    FONT = 'MSYHMONO.ttf'
 
     class Item:
         LEN_LEVEL = 7

@@ -2,7 +2,7 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GLUT import *
 # from PPT3D.glfw import *
-from win32api import GetSystemMetrics
+# from win32api import GetSystemMetrics
 import sys
 from Simulator.PPT3D.settings import Settings
 from Simulator.PPT3D.renderer import Renderer
@@ -11,12 +11,12 @@ from Simulator.PPT3D.base_logger import get_logger
 from Simulator.PPT3D.PPT import *
 import copy
 
-import win32com
-import win32com.client
+# import win32com
+# import win32com.client
 
 TEMP_PATH = "imgs/"
 
-
+'''
 # 请传入相对位置
 def ppt2img(filepath: str):
     if os.path.exists(TEMP_PATH) is False:
@@ -45,7 +45,7 @@ def ppt2img(filepath: str):
     ppt.Close()
     # 关闭powerpoint软件
     powerpoint.Quit()
-
+'''
 
 class PPT3D:
 
@@ -66,7 +66,8 @@ class PPT3D:
 
         # 取得屏幕大小
         self.zoom_window = 0.5
-        self.rect_screen = list(map(int, [GetSystemMetrics(0), GetSystemMetrics(1)]))
+        # self.rect_screen = list(map(int, [GetSystemMetrics(0), GetSystemMetrics(1)]))
+        self.rect_screen = list(map(int, [1366, 768]))
         self.rect_image = list(map(lambda x: x * 1, self.rect_screen))
         if window_size is not None:
             window_size = list(window_size)

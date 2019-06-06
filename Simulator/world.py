@@ -7,8 +7,9 @@ from Simulator.ui_logger import UiLogger
 # from Simulator.PPT3D.PPT import *
 from Simulator.PPT3D.ppt3d import Page, Frame as mFrame, PPT, PPT3D
 import random
-from PIL import Image, ImageTk
+from PIL import Image
 import multiprocessing
+import cv2
 
 
 class World:
@@ -21,9 +22,9 @@ class World:
         self.new_title(self.title)
 
         # 一些基本类
-        # self.spectrum_map = SpectrumMap()
-        # self.spectrum_map_wave = SpectrumMap()
-        self.spectrum = SpectrumMap2()
+        self.spectrum_map = SpectrumMap()
+        self.spectrum_map_wave = SpectrumMap()
+        # self.spectrum = SpectrumMap()
         self.lrc = Lyric()
         self.sound = Sound()
 
@@ -95,7 +96,7 @@ class World:
         t.start()
 
         self.sound.load()
-        # self.sound.play()
+        self.sound.play()
         self.lrc.start()
 
     def new_title(self, title: str):
@@ -109,16 +110,19 @@ class World:
     #     self.root.after(10, self.thread)
 
     def thread(self):
-        def im_clear(x):
-            if x == 255:
-                return 0
-            return x
-        # im = SpectrumMap.blend(self.spectrum_map, self.spectrum_map_wave, 1024)
-        im = self.spectrum.fetch(1)
-        # im = im.resize((256, 140))
-        imp = ImageTk.PhotoImage(image=im)
-        self.voice.configure(image=imp)
-        self.voice.image = imp
+        # def im_clear(x):
+        #     if x == 255:
+        #         return 0
+        #     return x
+        im = SpectrumMap.blend(self.spectrum_map, self.spectrum_map_wave, 1024)
+        # im = self.spectrum.fetch(1)
+        im = im.resize((256, 140))
+        # imp = ImageTk.PhotoImage(image=im)
+        # self.voice.configure(image=imp)
+        # self.voice.image = imp
+        img = cv2.cvtColor(np.asarray(im), cv2.COLOR_RGB2BGR)
+        cv2.imshow('Voice', img)
+        cv2.waitKey(1)
 
         if self.lrc.has_new():
             self.words.push(UiLogger.Item(UiLogger.LEVEL_INFO, 'Lyric', self.lrc.next()))
